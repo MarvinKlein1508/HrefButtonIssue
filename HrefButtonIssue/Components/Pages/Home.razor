@@ -1,0 +1,59 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<Virtualize Items="Items" Context="item">
+    <div class="mb-3">
+        <span class="me-1">@item.Name</span>
+
+        <Button Color="ButtonColor.Primary" Type="ButtonType.Link" To="@($"/Test/{item.Id}")">
+            Edit
+        </Button>
+    </div>
+</Virtualize>
+
+<Pagination ActivePageNumber="PageNumber"
+            TotalPages="TotalPages"
+            PageChanged="OnPageChangedAsync" />
+
+@code {
+    public List<TestModel> Items { get; set; } = [];
+
+    public int PageNumber { get; set; } = 1;
+    public int TotalPages { get; set; } = 10;
+
+    public Task OnPageChangedAsync(int pageNumber)
+    {
+        PageNumber = pageNumber;
+
+        InitPage();
+
+        return Task.CompletedTask;
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        InitPage();
+
+        return Task.CompletedTask;
+    }
+
+    private void InitPage()
+    {
+        Items = [];
+
+        for (int i = (PageNumber - 1) * 10; i < PageNumber * 10; i++)
+        {
+            Items.Add(new TestModel
+                {
+                    Name = $"Test {i}",
+                    Id = i
+                });
+        }
+    }
+
+}
